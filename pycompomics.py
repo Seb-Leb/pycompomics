@@ -41,7 +41,7 @@ class SearchGUI:
         print(result.stderr.decode())
 
     def set_search_params(self, **kwargs):
-        with open('./pycompomics/pycompomics/searchgui_default_params.yml', 'r') as f:
+        with open('./pycompomics/searchgui_default_params.yml', 'r') as f:
             def_params = yaml.full_load(f)
         params = def_params['ms-common']
         for p in params:
