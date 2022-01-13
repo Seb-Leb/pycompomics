@@ -13,6 +13,7 @@ class SearchGUI:
         self.mgf_path         = mgf_path
         self.out_dir          = out_dir
         self.exp_name         = exp_name
+        self.compomics_path   = compomics_path
         self.searchgui_path   = opj(compomics_path, searchgui_version, f'{searchgui_version}.jar')
         self.parameters_cache = opj(compomics_path, 'params_cache')
         self.db_cache         = db_cache
