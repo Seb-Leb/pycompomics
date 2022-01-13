@@ -27,12 +27,15 @@ class SearchGUI:
         else:
             self.gen_fastadb_decoy()
 
-        self.report_dir   = os.path.join(self.out_dir, 'reports')
-        self.log_dir      = os.path.join(self.out_dir, 'logs')
-        self.ms_level     = ms_level
+        self.report_dir   = opj(self.out_dir, 'reports')
+        self.log_dir      = opj(self.out_dir, 'logs')
         self.protein_fdr  = protein_fdr
+        self.ms_level     = ms_level
+        
         if not os.path.exists(self.report_dir):
             os.mkdir(self.report_dir)
+        
+        self.set_search_params()
 
     def run_search(self, ):
         search_cmd = self.get_search_cmd()
@@ -53,15 +56,15 @@ class SearchGUI:
         params.update(def_params['ms-level'][self.ms_level])
         self.search_engines = def_params['search-engines']
 
-        self.id_params_path = os.path.join(self.out_dir, 'id_params.par')
+        self.id_params_path = opj(self.out_dir, 'id_params.par')
         params['out'] = self.id_params_path
         params['db']  = self.db_path
         self.params = params
 
-        cmd = 'java -cp {} eu.isas.searchgui.cmd.IdentificationParametersCLI '.format(self.searchgui_path)
+        cmd = f'java -cp {self.searchgui_path} eu.isas.searchgui.cmd.IdentificationParametersCLI '
         for k, v in self.params.items():
-            cmd += '-{} {} '.format(k, v)
-        cmd += '-ptm_configuration {} '.format(self.ptm_config)
+            cmd += f'-{k} {v} '
+        cmd += f'-ptm_configuration {self.ptm_config} '
         cmd = [c.replace('&', ' ') for c in cmd.split()]
         result = subprocess.run(cmd, capture_output=True)
         print(result.stdout.decode())
@@ -69,24 +72,21 @@ class SearchGUI:
 
     def gen_fastadb_decoy(self):
         print('Generating DB with decoys.')
-        cmd = 'java -cp {} eu.isas.searchgui.cmd.FastaCLI -in {} -decoy'.format(
-                self.searchgui_path,
-                self.fasta_db
-                )
-        self.db_path = os.path.join(self.db_cache, self.fasta_db.replace('.fasta', '_concatenated_target_decoy.fasta'))
+        self.db_path = opj(self.db_cache, self.fasta_db.replace('.fasta', '_concatenated_target_decoy.fasta'))
+        # TODO load cache...
+        cmd = f'java -cp {self.searchgui_path} eu.isas.searchgui.cmd.FastaCLI -in {self.fasta_db} -decoy'
         result = subprocess.run(cmd.split(), capture_output=True)
         print(result.stdout.decode())
         print(result.stderr.decode())
 
     def get_search_cmd(self, **kwargs):
-        print(self.searchgui_path)
-        cmd  = 'java -Xmx27G -cp {} eu.isas.searchgui.cmd.SearchCLI '.format(self.searchgui_path)
-        cmd += '-spectrum_files {} '.format(self.mgf_path)
-        cmd += '-output_folder {} '.format(self.out_dir)
-        cmd += '-id_params {} '.format(self.id_params_path)
+        cmd  = f'java -Xmx27G -cp {self.searchgui_path} eu.isas.searchgui.cmd.SearchCLI '
+        cmd += f'-spectrum_files {self.mgf_path} '
+        cmd += f'-output_folder {self.out_dir} '
+        cmd += f'-id_params {self.id_params_path} '
         for k,v in self.search_engines.items():
-            cmd += '-{} {} '.format(k, v)
-        cmd += '-protein_fdr {} '.format(self.protein_fdr)
+            cmd += f'-{k} {v} '
+        cmd += f'-protein_fdr {self.protein_fdr} '
         return cmd
 
 class PeptideShaker:
@@ -98,39 +98,35 @@ class PeptideShaker:
         self.sample_name = sample_name
         self.replicate   = replicate
 
-        cmd = 'java -cp {} eu.isas.peptideshaker.cmd.PathSettingsCLI -temp_folder {} -ptm_configuration {}'.format(
-                self.peptideshaker_path,
-                self.tmp_dir,
-                os.path.join(self.tmp_dir, 'ptmFactory-4.12.14.json')
-                )
+        cmd = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.PathSettingsCLI -temp_folder {self.tmp_dir} -ptm_configuration {self.searchgui.ptm_config}'
         result = subprocess.run(cmd, capture_output=True, shell=True)
         print(result.stdout.decode())
         print(result.stderr.decode())
 
     def run(self, ):
-        cmd = 'java -Xmx27G -cp {} eu.isas.peptideshaker.cmd.PeptideShakerCLI '.format(self.peptideshaker_path)
-        cmd += '-temp_folder {} '.format(self.tmp_dir)
-        cmd += '-experiment {} '.format(self.searchgui.exp_name)
-        cmd += '-sample {} '.format(self.sample_name)
-        cmd += '-replicate {} '.format(self.replicate)
-        cmd += '-id_params {} '.format(self.searchgui.id_params_path)
-        cmd += '-identification_files {}/searchgui_out.zip '.format(self.searchgui.out_dir)
-        cmd += '-spectrum_files {} '.format(self.searchgui.mgf_path)
-        cmd += '-out {}/{}.cpsx '.format(self.out_dir, self.searchgui.exp_name)
-        cmd += '-zip {}/{}.cpsx.zip '.format(self.out_dir, self.searchgui.exp_name)
+        cmd = f'java -Xmx27G -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.PeptideShakerCLI '
+        cmd += f'-temp_folder {self.tmp_dir} '
+        cmd += f'-experiment {self.searchgui.exp_name} '
+        cmd += f'-sample {self.sample_name} '
+        cmd += f'-replicate {self.replicate} '
+        cmd += f'-id_params {self.searchgui.id_params_path} '
+        cmd += f'-identification_files {self.searchgui.out_dir}/searchgui_out.zip '
+        cmd += f'-spectrum_files {self.searchgui.mgf_path} '
+        cmd += f'-out {self.out_dir}/{self.searchgui.exp_name}.cpsx '
+        cmd += f'-zip {self.out_dir}/{self.searchgui.exp_name}.cpsx.zip '
         result = subprocess.run(cmd, capture_output=True, shell=True)
         print(result.stdout.decode())
         print(result.stderr.decode())
 
     def generate_reports(self, ):
-        self.out_reports_dir = os.path.join(self.out_dir, 'peptideshaker_reports')
+        self.out_reports_dir = opj(self.out_dir, 'peptideshaker_reports')
         if not os.path.exists(self.out_reports_dir):
             os.mkdir(self.out_reports_dir)
         reports_n = ', '.join([str(x) for x in range(9)])
-        cmd  = 'java -cp {} eu.isas.peptideshaker.cmd.ReportCLI '.format(self.peptideshaker_path)
-        cmd += '-in {}/{}.cpsx.zip '.format(self.out_dir, self.searchgui.exp_name)
-        cmd += '-out_reports {} '.format(self.out_reports_dir)
-        cmd += '-reports "{}"'.format(reports_n)
+        cmd  = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.ReportCLI '
+        cmd += f'-in {self.out_dir}/{self.searchgui.exp_name}.cpsx.zip '
+        cmd += f'-out_reports {self.out_reports_dir} '
+        cmd += f'-reports "{reports_n}"'
         result = subprocess.run(cmd, capture_output=True, shell=True)
         print(result.stdout.decode())
         print(result.stderr.decode())
