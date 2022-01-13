@@ -1,0 +1,52 @@
+---
+ms-common :
+    ms_low_mem_mode : 0
+    max_charge : 5
+    xtandem_min_frag_mz : 50 
+    msgf_num_ptms : 5 
+    myrimatch_num_ptms : 5 
+    ms_amanda_instrument : 
+        - "b"
+        - "y"
+        - "-H2O"
+        - "-NH3"
+    comet_num_ptms : 5 
+    comet_remove_meth : 1 
+    tide_num_ptms : 1 
+    tide_use_neutral_losses : 1 
+    enzyme : 
+        - "Trypsin"
+    fixed_mods : 
+        - ""
+    variable_mods : 
+        - "Oxidation&of&M"
+
+ms-level :
+    low :
+        frag_tol : 0.5
+        frag_ppm : 0 
+        prec_tol : 0.5
+        prec_ppm : 0 
+        msgf_instrument : 1
+    inter :
+        frag_tol : 0.1
+        frag_ppm : 0 
+        prec_tol : 0.006 
+        prec_ppm : 0 
+        msgf_instrument : 2
+    high :
+        frag_tol : 35 
+        frag_ppm : 1 
+        prec_tol : 70 
+        prec_ppm : 1 
+        msgf_instrument : 3
+
+search-engines:
+    andromeda : 0
+    omssa : 0
+    xtandem : 1
+    msgf : 1
+    ms_amanda : 0
+    myrimatch : 0
+    comet : 0
+    tide : 0
