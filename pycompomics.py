@@ -4,7 +4,6 @@ import subprocess
 import yaml
 from shutil import copyfile
 
-peptideshaker_path  = './tools/compomics/PeptideShaker-1.16.42/PeptideShaker-1.16.42.jar'
 
 class SearchGUI:
     def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, db_cache, ptm_config_json,
@@ -91,11 +90,12 @@ class SearchGUI:
         return cmd
 
 class PeptideShaker:
-    def __init__(self, searchgui, peptideshaker_version, sample_name = 'test', replicate   = 1):
+    def __init__(self, searchgui, peptideshaker_version, compomics_path=None, sample_name = 'test', replicate   = 1):
         self.searchgui = searchgui
         self.tmp_dir = searchgui.tmp_dir
         self.out_dir = searchgui.out_dir
-        self.peptideshaker_path = opj(self.searchgui.compomics_path, peptideshaker_version, f'{peptideshaker_version}.jar')
+        self.compomics_path = compomics_path if compomics_path is not None else sg.compomics_path
+        self.peptideshaker_path = opj(self.compomics_path, peptideshaker_version, f'{peptideshaker_version}.jar')
         self.sample_name = sample_name
         self.replicate   = replicate
 
