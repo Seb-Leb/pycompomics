@@ -4,6 +4,21 @@ import subprocess
 import yaml
 from shutil import copyfile
 
+report_ids = {
+    'Certificate of Analysis': '0',
+    'Default Hierarchical Report': '1',
+    'Default PSM Phosphorylation Report': '2',
+    'Default PSM Report': '3',
+    'Default PSM Report with non-validated matches': '4',
+    'Default Peptide Phosphorylation Report': '5',
+    'Default Peptide Report': '6',
+    'Default Peptide Report with non-validated matches': '7',
+    'Default Protein Phosphorylation Report': '8',
+    'Default Protein Report': '9',
+    'Default Protein Report with non-validated matches': '10',
+    'Extended PSM Report': '11',
+    'Extended PSM Annotation Report': '12'
+             }
 
 class SearchGUI:
     def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, db_cache, ptm_config_json,
@@ -119,11 +134,17 @@ class PeptideShaker:
         print(result.stdout.decode())
         print(result.stderr.decode())
 
-    def generate_reports(self, ):
+    def generate_reports(self, reports=[str(x) for x in range(9)]):
         self.out_reports_dir = opj(self.out_dir, 'peptideshaker_reports')
         if not os.path.exists(self.out_reports_dir):
             os.mkdir(self.out_reports_dir)
-        reports_n = ', '.join([str(x) for x in range(9)])
+
+        unavailable_reports = [x for x in reports if not x.isdigit() and x not in report_ids]
+        if unavailable_reports:
+            print(f'these reports are not available: {unavailable_reports}')
+        reports = [x if x.isdigit() else report_ids[x] for x in reports]
+        reports_n = ', '.join([str(x) for x in reports])
+
         cmd  = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.ReportCLI '
         cmd += f'-in {self.out_dir}/{self.searchgui.exp_name}.cpsx.zip '
         cmd += f'-out_reports {self.out_reports_dir} '
