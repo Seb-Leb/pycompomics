@@ -19,7 +19,7 @@ report_ids = {
     'Extended PSM Report': '11',
     'Extended PSM Annotation Report': '12'
              }
-
+# TODO: implement logging
 class SearchGUI:
     def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, db_cache, ptm_config_json,
             tmp_dir='tmp/', protein_fdr=1., ms_level='high'):
@@ -135,6 +135,9 @@ class PeptideShaker:
         print(result.stderr.decode())
 
     def generate_reports(self, reports=[str(x) for x in range(9)]):
+        if type(report) is not list:
+            raise('reports argument must be of type list.')
+
         self.out_reports_dir = opj(self.out_dir, 'peptideshaker_reports')
         if not os.path.exists(self.out_reports_dir):
             os.mkdir(self.out_reports_dir)
