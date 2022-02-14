@@ -19,10 +19,12 @@ report_ids = {
     'Extended PSM Report': '11',
     'Extended PSM Annotation Report': '12'
              }
+
 # TODO: implement logging
+
 class SearchGUI:
     def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, db_cache, ptm_config_json,
-            tmp_dir='tmp/', protein_fdr=1., ms_level='high'):
+            n_threads=4, tmp_dir='tmp/', protein_fdr=1., ms_level='high'):
         self.fasta_db         = fasta_db    
         self.mgf_path         = mgf_path
         self.out_dir          = out_dir
@@ -33,6 +35,7 @@ class SearchGUI:
         self.db_cache         = db_cache
         self.ptm_config       = opj(compomics_path, 'ptm', ptm_config_json)
         self.tmp_dir          = tmp_dir
+        self.n_threads        = n_threads
         if not os.path.exists(self.tmp_dir):
             os.mkdir(self.tmp_dir)
         
@@ -102,6 +105,7 @@ class SearchGUI:
         for k,v in self.search_engines.items():
             cmd += f'-{k} {v} '
         cmd += f'-protein_fdr {self.protein_fdr} '
+        cmd += f'-threads {self.n_threads} '
         return cmd
 
 class PeptideShaker:
@@ -135,7 +139,7 @@ class PeptideShaker:
         print(result.stderr.decode())
 
     def generate_reports(self, reports=[str(x) for x in range(9)]):
-        if type(report) is not list:
+        if type(reports) is not list:
             raise('reports argument must be of type list.')
 
         self.out_reports_dir = opj(self.out_dir, 'peptideshaker_reports')
