@@ -24,7 +24,7 @@ report_ids = {
 
 class SearchGUI:
     def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, db_cache, ptm_config_json,
-            n_threads=4, tmp_dir='tmp/', protein_fdr=1., ms_level='high'):
+            n_threads=4, tmp_dir='tmp/', protein_fdr=1., ms_level='high', generate_fasta_db=False):
         self.fasta_db         = fasta_db    
         self.mgf_path         = mgf_path
         self.out_dir          = out_dir
@@ -42,7 +42,7 @@ class SearchGUI:
         db_path = fasta_db.split('.')[0] + '_concatenated_target_decoy.fasta'
         if os.path.isfile(db_path):
             self.db_path = db_path
-        else:
+        elif generate_fasta_db:
             self.gen_fastadb_decoy()
 
         self.report_dir   = opj(self.out_dir, 'reports')
