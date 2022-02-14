@@ -146,10 +146,10 @@ class PeptideShaker:
         if not os.path.exists(self.out_reports_dir):
             os.mkdir(self.out_reports_dir)
 
-        unavailable_reports = [x for x in reports if not x.isdigit() and x not in report_ids]
+        unavailable_reports = [x for x in reports if not str(x).isdigit() and x not in report_ids]
         if unavailable_reports:
             print(f'these reports are not available: {unavailable_reports}')
-        reports = [x if x.isdigit() else report_ids[x] for x in reports]
+        reports = [x if str(x).isdigit() else report_ids[x] for x in reports]
         reports_n = ', '.join([str(x) for x in reports])
 
         cmd  = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.ReportCLI '
