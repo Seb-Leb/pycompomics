@@ -130,7 +130,7 @@ class PeptideShaker:
         cmd += f'-experiment {self.searchgui.exp_name} '
         cmd += f'-sample {self.sample_name} '
         cmd += f'-replicate {self.replicate} '
-        cmd += f'-fasta {self.fasta} '
+        cmd += f'-fasta_file {self.fasta} '
         #cmd += f'-id_params {self.searchgui.id_params_path} '
         cmd += f'-identification_files {self.searchgui.out_dir}/search_results/searchgui_out.zip '
         cmd += f'-spectrum_files {self.searchgui.mgf_path} '
