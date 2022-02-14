@@ -100,7 +100,7 @@ class SearchGUI:
     def get_search_cmd(self, **kwargs):
         cmd  = f'java -Xmx27G -cp {self.searchgui_path} eu.isas.searchgui.cmd.SearchCLI '
         cmd += f'-spectrum_files {self.mgf_path} '
-        cmd += f'-output_folder {self.out_dir} '
+        cmd += f'-output_folder {self.out_dir}/search_results/ '
         cmd += f'-id_params {self.id_params_path} '
         for k,v in self.search_engines.items():
             cmd += f'-{k} {v} '
@@ -130,7 +130,7 @@ class PeptideShaker:
         cmd += f'-sample {self.sample_name} '
         cmd += f'-replicate {self.replicate} '
         cmd += f'-id_params {self.searchgui.id_params_path} '
-        cmd += f'-identification_files {self.searchgui.out_dir}/searchgui_out.zip '
+        cmd += f'-identification_files {self.searchgui.out_dir}/search_results/searchgui_out.zip '
         cmd += f'-spectrum_files {self.searchgui.mgf_path} '
         cmd += f'-out {self.out_dir}/{self.searchgui.exp_name}.cpsx '
         cmd += f'-zip {self.out_dir}/{self.searchgui.exp_name}.cpsx.zip '
