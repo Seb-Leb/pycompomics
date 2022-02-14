@@ -109,7 +109,7 @@ class SearchGUI:
         return cmd
 
 class PeptideShaker:
-    def __init__(self, searchgui, peptideshaker_version, compomics_path=None, sample_name = 'sample', replicate = 1):
+    def __init__(self, searchgui, peptideshaker_version, fasta, compomics_path=None, sample_name = 'sample', replicate = 1):
         self.searchgui = searchgui
         self.tmp_dir = searchgui.tmp_dir
         self.out_dir = searchgui.out_dir
@@ -117,6 +117,7 @@ class PeptideShaker:
         self.peptideshaker_path = opj(self.compomics_path, peptideshaker_version, f'{peptideshaker_version}.jar')
         self.sample_name = sample_name
         self.replicate   = replicate
+        self.fasta = fasta
 
         cmd = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.PathSettingsCLI -temp_folder {self.tmp_dir} -ptm_configuration {self.searchgui.ptm_config}'
         result = subprocess.run(cmd, capture_output=True, shell=True)
@@ -129,6 +130,7 @@ class PeptideShaker:
         cmd += f'-experiment {self.searchgui.exp_name} '
         cmd += f'-sample {self.sample_name} '
         cmd += f'-replicate {self.replicate} '
+        cmd += f'-fasta {self.fasta} '
         #cmd += f'-id_params {self.searchgui.id_params_path} '
         cmd += f'-identification_files {self.searchgui.out_dir}/search_results/searchgui_out.zip '
         cmd += f'-spectrum_files {self.searchgui.mgf_path} '
