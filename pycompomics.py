@@ -109,7 +109,7 @@ class SearchGUI:
         return cmd
 
 class PeptideShaker:
-    def __init__(self, searchgui, peptideshaker_version, compomics_path=None, sample_name = 'test', replicate   = 1):
+    def __init__(self, searchgui, peptideshaker_version, compomics_path=None, sample_name = 'sample', replicate = 1):
         self.searchgui = searchgui
         self.tmp_dir = searchgui.tmp_dir
         self.out_dir = searchgui.out_dir
@@ -129,7 +129,7 @@ class PeptideShaker:
         cmd += f'-experiment {self.searchgui.exp_name} '
         cmd += f'-sample {self.sample_name} '
         cmd += f'-replicate {self.replicate} '
-        cmd += f'-id_params {self.searchgui.id_params_path} '
+        #cmd += f'-id_params {self.searchgui.id_params_path} '
         cmd += f'-identification_files {self.searchgui.out_dir}/search_results/searchgui_out.zip '
         cmd += f'-spectrum_files {self.searchgui.mgf_path} '
         cmd += f'-out {self.out_dir}/{self.searchgui.exp_name}.cpsx '
