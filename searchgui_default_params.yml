@@ -43,10 +43,10 @@ ms-level :
 
 search-engines:
     andromeda : 0
-    omssa : 0
+    omssa : 1
     xtandem : 1
     msgf : 1
     ms_amanda : 0
     myrimatch : 0
-    comet : 0
+    comet : 1
     tide : 0
