@@ -53,7 +53,6 @@ class SearchGUI:
         if not os.path.exists(self.report_dir):
             os.mkdir(self.report_dir)
         
-        self.set_search_params()
 
     def run_search(self, ):
         search_cmd = self.get_search_cmd()
