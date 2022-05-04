@@ -28,6 +28,9 @@ class SearchGUI:
         self.fasta_db         = fasta_db    
         self.mgf_path         = mgf_path
         self.out_dir          = out_dir
+        self.search_results_dir = opj(self.out_dir, 'search_results')
+        if not os.path.exists(self.search_results_dir):
+            os.mkdir(self.search_results_dir)
         self.exp_name         = exp_name
         self.compomics_path   = compomics_path
         self.searchgui_path   = opj(compomics_path, searchgui_version, f'{searchgui_version}.jar')
