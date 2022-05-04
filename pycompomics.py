@@ -81,7 +81,7 @@ class SearchGUI:
         cmd = f'java -cp {self.searchgui_path} eu.isas.searchgui.cmd.IdentificationParametersCLI '
         for k, v in self.params.items():
             cmd += f'-{k} {v} '
-        cmd += f'-ptm_configuration {self.ptm_config} '
+        #cmd += f'-ptm_configuration {self.ptm_config} '
         cmd = [c.replace('&', ' ') for c in cmd.split()]
         result = subprocess.run(cmd, capture_output=True)
         print(result.stdout.decode())
@@ -112,13 +112,13 @@ class PeptideShaker:
         self.searchgui = searchgui
         self.tmp_dir = searchgui.tmp_dir
         self.out_dir = searchgui.out_dir
-        self.compomics_path = compomics_path if compomics_path is not None else sg.compomics_path
+        self.compomics_path = compomics_path if compomics_path is not None else searchgui.compomics_path
         self.peptideshaker_path = opj(self.compomics_path, peptideshaker_version, f'{peptideshaker_version}.jar')
         self.sample_name = sample_name
         self.replicate   = replicate
         self.fasta = fasta
 
-        cmd = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.PathSettingsCLI -temp_folder {self.tmp_dir} -ptm_configuration {self.searchgui.ptm_config}'
+        cmd = f'java -cp {self.peptideshaker_path} eu.isas.peptideshaker.cmd.PathSettingsCLI -temp_folder {self.tmp_dir}'
         result = subprocess.run(cmd, capture_output=True, shell=True)
         print(result.stdout.decode())
         print(result.stderr.decode())
