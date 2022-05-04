@@ -53,6 +53,10 @@ class SearchGUI:
         if not os.path.exists(self.report_dir):
             os.mkdir(self.report_dir)
         
+        cmd = f'java -cp {self.searchgui_path} eu.isas.searchgui.cmd.PathSettingsCLI -temp_folder {self.tmp_dir}'
+        result = subprocess.run(cmd, capture_output=True, shell=True)
+        print(result.stdout.decode())
+        print(result.stderr.decode())
 
     def run_search(self, ):
         search_cmd = self.get_search_cmd()
