@@ -23,8 +23,8 @@ report_ids = {
 # TODO: implement logging
 
 class SearchGUI:
-    def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, db_cache, ptm_config_json,
-            n_threads=4, tmp_dir='tmp/', protein_fdr=1., ms_level='high', generate_fasta_db=False):
+    def __init__(self, fasta_db, mgf_path, out_dir, exp_name, compomics_path, searchgui_version, 
+            ptm_config_json='', db_cache='', n_threads=4, tmp_dir='tmp/', protein_fdr=1., ms_level='high', generate_fasta_db=False):
         self.fasta_db         = fasta_db    
         self.mgf_path         = mgf_path
         self.out_dir          = out_dir
@@ -81,7 +81,6 @@ class SearchGUI:
         cmd = f'java -cp {self.searchgui_path} eu.isas.searchgui.cmd.IdentificationParametersCLI '
         for k, v in self.params.items():
             cmd += f'-{k} {v} '
-        #cmd += f'-ptm_configuration {self.ptm_config} '
         cmd = [c.replace('&', ' ') for c in cmd.split()]
         result = subprocess.run(cmd, capture_output=True)
         print(result.stdout.decode())
